@@ -1,68 +1,124 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# [React Redux Unit & Integration Testing with Jest and Enzyme](https://www.youtube.com/watch?v=EgJZv9Iyj-E&list=PL-Db3tEF6pB8Am-IhCRgyGSxTalkDpUV_)
 
-## Available Scripts
+### refactor
 
-In the project directory, you can run:
+```
+// 1.
+describe('Header Component', () => {
+  it('Should render without errors', () => {
+    const component = shallow(<Header />);
+    const wrapper = component.find('.headerComponent');
+    expect(wrapper.length).toBe(1);
+  });
 
-### `npm start`
+  it('Should render a logo', () => {
+    const component = shallow(<Header />);
+    const logo = component.find('.logo');
+    expect(logo.length).toBe(1);
+  });
+});
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+```
+// 2.
+const setUp = (props={}) => {
+  const component = shallow(<Header />);
+  return component;
+}
 
-### `npm test`
+describe('Header Component', () => {
+  it('Should render without errors', () => {
+    const component = setUp();
+    const wrapper = component.find('.headerComponent');
+    expect(wrapper.length).toBe(1);
+  });
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  it('Should render a logo', () => {
+    const component = setUp();
+    const logo = component.find('.logo');
+    expect(logo.length).toBe(1);
+  });
+});
+```
 
-### `npm run build`
+```
+// 3. use beforeEach()
+const setUp = (props={}) => {
+  const component = shallow(<Header />);
+  return component;
+}
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+describe('Header Component', () => {
+  let component;
+  beforeEach(() => {
+    component = setUp();
+  });
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+  it('Should render without errors', () => {
+    const wrapper = component.find('.headerComponent');
+    expect(wrapper.length).toBe(1);
+  });
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  it('Should render a logo', () => {
+    const logo = component.find('.logo');
+    expect(logo.length).toBe(1);
+  });
+});
+```
 
-### `npm run eject`
+```
+// 4. use "data-test"
+const setUp = (props={}) => {
+  const component = shallow(<Header />);
+  return component;
+}
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+describe('Header Component', () => {
+  let component;
+  beforeEach(() => {
+    component = setUp();
+  });
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  it('Should render without errors', () => {
+    const wrapper = component.find(`[data-test='headerComponent']`);
+    expect(wrapper.length).toBe(1);
+  });
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  it('Should render a logo', () => {
+    const logo = component.find(`[data-test='logo']`);
+    expect(logo.length).toBe(1);
+  });
+});
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+// 5.
+const setUp = (props = {}) => {
+  const component = shallow(<Header />);
+  return component;
+};
 
-## Learn More
+const findByTestAttr = (component, attr) => {
+  const wrapper = component.find(`[data-test='${attr}']`);
+  return wrapper;
+};
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+describe('Header Component', () => {
+  let component;
+  beforeEach(() => {
+    component = setUp();
+  });
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  it('Should render without errors', () => {
+    const wrapper = findByTestAttr(component, 'headerComponent');
+    expect(wrapper.length).toBe(1);
+  });
 
-### Code Splitting
+  it('Should render a logo', () => {
+    const logo = findByTestAttr(component, 'logo');
+    expect(logo.length).toBe(1);
+  });
+});
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+```
