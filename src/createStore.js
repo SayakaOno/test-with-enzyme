@@ -8,4 +8,4 @@ export const createStoreWithMiddleware = applyMiddleware(...middlewares)(
   createStore
 );
 
-export const store = createStore(RootReducer);
+export const store = createStoreWithMiddleware(RootReducer);
