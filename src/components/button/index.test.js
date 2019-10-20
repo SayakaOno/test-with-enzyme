@@ -36,7 +36,7 @@ describe('SharedButton Component', () => {
       const button = findByTestAttr(wrapper, 'buttonComponent');
       button.simulate('click');
       const callback = mockFunc.mock.calls.length;
-      expect(callback).toBe(1);
+      expect(callback).toBe(0);
     });
   });
 });
